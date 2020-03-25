@@ -1,6 +1,7 @@
+TOP = /home/amfelden/CODES/2_TEMP/PeleLM/
 #AMREX_HOME ?= ${TOP}/amrex
 #IAMR_HOME ?= ${TOP}/IAMR_EB
-PELELM_HOME = /home/amfelden/CODES/2_TEMP/PeleLM/
+PELELM_HOME = ${TOP}
 
 #
 # Build configuration
@@ -22,6 +23,8 @@ TINY_PROFILE = FALSE
 #DEFINES+=-DALWAYS_NEW_J
 
 DO_2S_CONVERGENCE=FALSE
+
+USE_EB = FALSE
 
 #######################
 USE_SUNDIALS_PP = TRUE
