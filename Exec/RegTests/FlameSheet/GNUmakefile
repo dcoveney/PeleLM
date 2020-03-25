@@ -1,7 +1,6 @@
-TOP = ../../../..
-AMREX_HOME ?= ${TOP}/amrex
-IAMR_HOME ?= ${TOP}/IAMR_EB
-PELELM_HOME ?= ${TOP}/PeleLM_EB
+#AMREX_HOME ?= ${TOP}/amrex
+#IAMR_HOME ?= ${TOP}/IAMR_EB
+PELELM_HOME = /home/amfelden/CODES/2_TEMP/PeleLM/
 
 #
 # Build configuration
@@ -15,18 +14,21 @@ USE_OMP         = FALSE
 PRECISION       = DOUBLE
 VERBOSE         = FALSE
 
+USE_CUDA        = FALSE
+
 TINY_PROFILE = FALSE
 #USE_WBAR = TRUE
 
-DEFINES+=-DALWAYS_NEW_J
+#DEFINES+=-DALWAYS_NEW_J
 
 DO_2S_CONVERGENCE=FALSE
 
 #######################
-USE_SUNDIALS_PP = FALSE
+USE_SUNDIALS_PP = TRUE
 
 USE_KLU_PP = FALSE
 
+USE_CUDA_CVODE = FALSE 
 #######################
 
 # Enable ht.velocity_plotfile option
