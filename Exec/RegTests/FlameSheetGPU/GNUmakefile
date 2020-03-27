@@ -1,7 +1,4 @@
-TOP = /home/amfelden/CODES/2_TEMP/PeleLM/
-#AMREX_HOME ?= ${TOP}/amrex
-#IAMR_HOME ?= ${TOP}/IAMR_EB
-PELELM_HOME = ${TOP}
+PELELM_HOME = /global/cscratch1/sd/amfelden/PeleLM_EB/
 
 #
 # Build configuration
@@ -15,12 +12,10 @@ USE_OMP         = FALSE
 PRECISION       = DOUBLE
 VERBOSE         = FALSE
 
-USE_CUDA        = FALSE
+USE_CUDA        = TRUE
 
 TINY_PROFILE = FALSE
 #USE_WBAR = TRUE
-
-#DEFINES+=-DALWAYS_NEW_J
 
 DO_2S_CONVERGENCE=FALSE
 
@@ -31,7 +26,7 @@ USE_SUNDIALS_PP = TRUE
 
 USE_KLU_PP = FALSE
 
-USE_CUDA_CVODE = FALSE 
+USE_CUDA_CVODE = TRUE
 #######################
 
 # Enable ht.velocity_plotfile option

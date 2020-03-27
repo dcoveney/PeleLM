@@ -161,8 +161,8 @@ ns.do_group_bndry_fills = 1
 cg.cg_solver=1
 
 # Select CVODE Jacobian eval: 0=FD 1=AJ
-ode.analytical_jacobian = 0
-cvode.solve_type = 1 
+cvode.analytical_jacobian = 0
+cvode.solve_type = 99 
 
 #
 # Select form of FAB output: default is NATIVE
