@@ -8821,12 +8821,10 @@ amrex::Print() << "\n HERE IS P_AMB FOR CLOSED CHAMBER = " << std::setprecision(
     return;
   }
 
-
- int nGrow = dpdt.nGrow();
+  int nGrow = dpdt.nGrow();
   FillPatchIterator S_fpi(*this,get_new_data(State_Type),nGrow,time,State_Type,RhoRT,1);
   MultiFab& Peos=S_fpi.get_mf();
 
-  
 #ifdef AMREX_USE_EB
   {
     MultiFab TT(grids,dmap,1,nGrow,MFInfo(),Factory());
