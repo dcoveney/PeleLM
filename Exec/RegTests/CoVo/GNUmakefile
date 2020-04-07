@@ -1,7 +1,7 @@
 TOP = ../../../../
 AMREX_HOME ?= ${TOP}/amrex
-IAMR_HOME ?= ${TOP}/IAMR_diff_rearange
-PELELM_HOME ?= ${TOP}/PeleLM_diff_rearange
+IAMR_HOME ?= ${TOP}/IAMR
+PELELM_HOME ?= ${TOP}/PeleLM
 
 #
 # Build configuration
@@ -10,7 +10,7 @@ PELELM_HOME ?= ${TOP}/PeleLM_diff_rearange
 DIM             = 2
 COMP            = gnu
 DEBUG           = FALSE
-USE_MPI         = TRUE
+USE_MPI         = FALSE
 USE_OMP         = FALSE
 PRECISION       = DOUBLE
 VERBOSE         = FALSE
@@ -19,6 +19,8 @@ TINY_PROFILE = FALSE
 #USE_WBAR = TRUE
 
 DEFINES+=-DALWAYS_NEW_J
+
+#USE_EB = TRUE
 
 #######################
 USE_SUNDIALS_3x4x = FALSE

@@ -2050,7 +2050,7 @@ MultiFab::Copy(S_new,P_new,0,RhoRT,1,1);
   
 static int count_init=0;
 count_init++;
-amrex::Print() << "\n EM DEBUG PLOTTING SNEW AT END OF ADVANCE itr = " << count_init << " \n" ;
+amrex::Print() << "\n EM DEBUG PLOTTING AFTER INIT DATA count_init = " << count_init << " \n" ;
 VisMF::Write(S_new,"EMDEBUG_Snew_initdata_"+std::to_string(count_init));
 
 
@@ -5662,9 +5662,11 @@ amrex::Print() << "EM DEBUG p_amb_new = " << p_amb_new << "\n";
     BL_PROFILE_VAR_STOP(HTMAC);
       
     // compute new-time thermodynamic pressure and chi_increment
+//amrex::Print() << "\n \n \n \n JUST FOR DEBUG WE ARE BEFORE CHI_INCREMENT \n \n \n ";
     setThermoPress(tnp1);
 
     chi_increment.setVal(0.0,nGrowAdvForcing);
+amrex::Print() << "\n \n \n \n JUST FOR DEBUG WE ARE BEFORE CALC_DPDT \n \n \n ";
     calc_dpdt(tnp1,dt,chi_increment,u_mac);
     
 #ifdef AMREX_USE_EB
@@ -5806,7 +5808,6 @@ showMF("chi",mac_divu,"mac_divu_before_project",level);
     scalar_advection_update(dt, Density, Density);
 
 VisMF::Write(S_new,"EMDEBUG_Snew_after_scalar_advection_update_"+std::to_string(count_adv));
-// EM DEBUG  OK UNTIL HERE WE HAVE THE SAME SOLUTION between each level
 
     make_rho_curr_time();
     BL_PROFILE_VAR_STOP(HTADV);
@@ -5882,6 +5883,8 @@ VisMF::Write(S_new,"EMDEBUG_Snew_before_differential_diffusion_update__"+std::to
     // 
     BL_PROFILE_VAR_START(HTREAC);
 
+amrex::Print() << "\n \n \n \n JUST FOR DEBUG WE ARE BEFORE ADVANCE_CHEM \n \n \n ";
+setThermoPress(tnp1);
 
 VisMF::Write(S_new,"EMDEBUG_Snew_after_differential_diffusion_update__"+std::to_string(count_adv));
     
@@ -5905,8 +5908,15 @@ VisMF::Write(S_new,"EMDEBUG_Snew_after_differential_diffusion_update__"+std::to_
   set_body_state(S_new);
 #endif
     
+amrex::Print() << "\n \n \n \n JUST FOR DEBUG WE ARE AFTER ADVANCE_CHEM \n \n \n ";
+setThermoPress(tnp1);
+
+
     RhoH_to_Temp(S_new);
 
+
+amrex::Print() << "\n \n \n \n JUST FOR DEBUG WE ARE AFTER RHO1TEMP \n \n \n ";
+setThermoPress(tnp1);
 
 amrex::Print() << "\n EM DEBUG PLOTTING SNEW AT END OF ADVANCE itr = " << count_adv << " \n" ;
 VisMF::Write(S_new,"EMDEBUG_Snew_end_advance"+std::to_string(count_adv));
@@ -6263,7 +6273,7 @@ amrex::Print() << "\n \n EM DEBUG HERE IS THE NEW dp0dt = " << dp0dt << " \n \n 
   }
   BL_PROFILE_VAR_STOP(HTMAC);
 
-  amrex::Print() << "level 0: prev_time, p_amb_old, p_amb_new, delta = " 
+  amrex::Print() << "level 0: prev_time, p_amb_old, p_amb_new, delta = " << std::setprecision(24) 
                  << prev_time << " " << p_amb_old << " " << p_amb_new << " "
                  << p_amb_new-p_amb_old << std::endl;
 
@@ -7014,6 +7024,7 @@ PeleLM::compute_scalar_advection_fluxes_and_divergence (const MultiFab& Force,
         (*EdgeFlux[d])[S_mfi].copy(edgeflux[d],efbox,nspecies+1,efbox,RhoH,1);
         (*EdgeFlux[d])[S_mfi].copy(edgeflux[d],efbox,nspecies+2,efbox,Temp,1);
 
+
 //amrex::Print() << "\n \n PLOTTING EdgeFlux "<< (*EdgeFlux[d])[S_mfi];
 //amrex::Print() << "\n \n PLOTTING EdgeStatex "<<(*EdgeState[d])[S_mfi];
 //amrex::Print() << edgeflux[d];
@@ -7025,7 +7036,8 @@ PeleLM::compute_scalar_advection_fluxes_and_divergence (const MultiFab& Force,
  
   
 #endif
-  
+
+
   showMF("sdc",*EdgeState[0],"sdc_ESTATE_x",level,parent->levelSteps(level));
   showMF("sdc",*EdgeState[1],"sdc_ESTATE_y",level,parent->levelSteps(level));
 #if BL_SPACEDIM==3
@@ -8787,6 +8799,8 @@ PeleLM::calc_dpdt (Real      time,
   // for open chambers, ambient pressure is constant in time
   Real p_amb = p_amb_old;
 
+amrex::Print() << "\n HERE IS P_AMB = " << std::setprecision(24) << p_amb << " \n";
+
   if (closed_chamber == 1)
   {
     // for closed chambers, use piecewise-linear interpolation
@@ -8800,42 +8814,17 @@ PeleLM::calc_dpdt (Real      time,
     p_amb = (lev_0_curtime - time )/(lev_0_curtime-lev_0_prevtime) * p_amb_old +
             (time - lev_0_prevtime)/(lev_0_curtime-lev_0_prevtime) * p_amb_new;
   }
-  
+amrex::Print() << "\n HERE IS P_AMB FOR CLOSED CHAMBER = " << std::setprecision(24) << p_amb << " \n";  
   if (dt <= 0.0 || dpdt_factor <= 0)
   {
     dpdt.setVal(0);
     return;
   }
 
-  int nGrow = dpdt.nGrow();
 
-//FillPatchIterator S_fpi(*this,Peos,nGrow,time,State_Type,RhoRT,1);
-//  MultiFab& Peos=S_fpi.get_mf();
-
-  MultiFab Peos(grids,dmap,1,nGrow,MFInfo(),Factory());
-  Peos.setVal(0.);
-  FillPatchIterator S_fpi(*this,Peos,nGrow,time,State_Type,RhoRT,1);
-  MultiFab& Smf=S_fpi.get_mf();
-  
-
-  
-#ifdef _OPENMP
-#pragma omp parallel
-#endif  
-  for (MFIter mfi(Smf,true); mfi.isValid();++mfi)
-  {
-    const Box& bx = mfi.growntilebox();
-    FArrayBox&       S   = Smf[mfi];
-    Peos[mfi].copy(S,bx,0,bx,0,nGrow);
-//Peos[mfi].setVal(101325.);
-//amrex::Print() << Peos[mfi] ;
-//std::cout << std::setprecision(24) << Peos[mfi];
-  }
- 
-
- 
-  Peos.FillBoundary(geom.periodicity());
-
+ int nGrow = dpdt.nGrow();
+  FillPatchIterator S_fpi(*this,get_new_data(State_Type),nGrow,time,State_Type,RhoRT,1);
+  MultiFab& Peos=S_fpi.get_mf();
 
   
 #ifdef AMREX_USE_EB
@@ -8858,10 +8847,11 @@ PeleLM::calc_dpdt (Real      time,
     dpdt[mfi].copy(Peos[mfi],vbox,0,vbox,0,1);
     dpdt[mfi].plus(-p_amb,vbox);
     dpdt[mfi].mult(1.0/dt,vbox,0,1);
+//amrex::Print() << std::setprecision(24) << Peos[mfi];
     dpdt[mfi].divide(Peos[mfi],vbox,0,0,1);
     dpdt[mfi].mult(dpdt_factor,vbox,0,1);
-
-//amrex::Print() << dpdt[mfi];
+//dpdt[mfi].setVal(0.);
+//amrex::Print() << std::setprecision(24) << dpdt[mfi];
 
   }
 

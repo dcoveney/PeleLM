@@ -199,8 +199,13 @@ contains
                x = (float(i)+.5d0)*delta(1)+domnlo(1)
 
                scal(i,j,k,Temp) = T_mean
-               Yl(1) = 0.233d0
-               Yl(2) = 0.767d0
+            !   Yl(1) = 0.233d0
+            !   Yl(2) = 0.767d0
+
+               Yl(1) = 1.0d0
+                Yl(2) = 0.0d0
+
+
 
                do n = 1,nspecies
                   scal(i,j,k,FirstSpec+n-1) = Yl(n)
@@ -218,21 +223,39 @@ contains
                   CASE (1)
                      vel(i,j,k,1) = meanFlowMag + u_vort
                      vel(i,j,k,2) = v_vort
+#if ( AMREX_SPACEDIM == 3 )
+                     vel(i,j,k,3) = meanFlowMag 
+#endif
                   CASE (-1)
                      vel(i,j,k,1) = -meanFlowMag + u_vort
                      vel(i,j,k,2) = v_vort
+#if ( AMREX_SPACEDIM == 3 )
+                     vel(i,j,k,3) = meanFlowMag 
+#endif
                   CASE (2)
                      vel(i,j,k,1) = u_vort
                      vel(i,j,k,2) = meanFlowMag + v_vort
+#if ( AMREX_SPACEDIM == 3 )
+                     vel(i,j,k,3) = meanFlowMag
+#endif
                   CASE (-2)
                      vel(i,j,k,1) = u_vort
                      vel(i,j,k,2) = -meanFlowMag + v_vort
+#if ( AMREX_SPACEDIM == 3 )
+                     vel(i,j,k,3) = meanFlowMag
+#endif
                   CASE (3)
                      vel(i,j,k,1) = meanFlowMag + u_vort
                      vel(i,j,k,2) = meanFlowMag + v_vort
+#if ( AMREX_SPACEDIM == 3 )
+                     vel(i,j,k,3) = meanFlowMag
+#endif
                   CASE (-3)
                      vel(i,j,k,1) = -meanFlowMag + u_vort
                      vel(i,j,k,2) = -meanFlowMag + v_vort
+#if ( AMREX_SPACEDIM == 3 )
+                     vel(i,j,k,3) = meanFlowMag
+#endif
                END SELECT
 
             end do
