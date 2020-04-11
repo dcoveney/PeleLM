@@ -4105,7 +4105,7 @@ PeleLM::compute_enthalpy_fluxes (MultiFab* const*       flux,
     if (add_hoop_stress)
     {
       // Below if for scaling by volume, only for R-Z case
-      (*flux[i]).mult<RunOn::Host>(b/(geom.CellSize()[i]),nspecies+2,1,0);
+      (*flux[i]).mult(b/(geom.CellSize()[i]),nspecies+2,1,0);
     }
     else
     {
@@ -6895,13 +6895,13 @@ PeleLM::compute_scalar_advection_fluxes_and_divergence (const MultiFab& Force,
      }
      
       for (int comp=0; comp < nspecies; comp++){      
-        (*aofs)[S_mfi].plus((*aofs)[S_mfi],bx,bx,first_spec+comp,Density,1);
+        (*aofs)[S_mfi].plus<RunOn::Host>((*aofs)[S_mfi],bx,bx,first_spec+comp,Density,1);
       }
       for (int d=0; d<BL_SPACEDIM; d++)
       {
         for (int comp=0; comp < nspecies; comp++){
-          edgestate[d].plus(edgestate[d],comp+1,0,1);
-          edgeflux[d].plus(edgeflux[d],comp+1,0,1);
+          edgestate[d].plus<RunOn::Host>(edgestate[d],comp+1,0,1);
+          edgeflux[d].plus<RunOn::Host>(edgeflux[d],comp+1,0,1);
         }
       }
       
