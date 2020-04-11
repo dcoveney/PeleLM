@@ -644,6 +644,7 @@ contains
                CALL pphys_TfromHYpt( T(i,j,k), Hmix(i,j,k), Yt, errMax, NiterMAX, res, Niter)
 
                if (Niter < 0) then
+                  write(*,*)"Error code ", Niter
                   call amrex_abort(" Something went wrong in pphys_TfromHYpt ")
                end if
 
@@ -3714,7 +3715,7 @@ contains
       implicit none
 
       integer :: t_lo(3), t_hi(3)
-      integer :: boxlo(3), boxhi(3)
+      REAL_T :: boxlo(3), boxhi(3)
       integer :: lo(3), hi(3), domlo(3), domhi(3)
       integer :: set, clear, level
       integer, dimension(t_lo(1):t_hi(1),t_lo(2):t_hi(2),t_lo(3):t_hi(3)) :: tag
